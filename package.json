@@ -1,0 +1,27 @@
+{
+  "name": "esbuild-plugin-vue2-template-compiler",
+  "version": "1.0.0",
+  "description": "a esbuild plugin for work with vue2",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "esbuild src/index.js --outfile=dist/index.js --format=cjs",
+    "build:test": "cd test && node build.js"
+  },
+  "keywords": [
+    "vue",
+    "esbuild",
+    "esbuild-plugin"
+  ],
+  "author": "yuekcc",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.9.0",
+    "vue": "^2.6.12"
+  },
+  "peerDependencies": {
+    "esbuild": "^0.9.0"
+  },
+  "dependencies": {
+    "vue-template-compiler": "^2.6.12"
+  }
+}
