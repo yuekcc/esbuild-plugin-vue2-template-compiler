@@ -6,9 +6,12 @@ function toFunction(body) {
   return `function() {${body}}`;
 }
 
-function compile(source) {
+function compile(source, compilerOptions = null) {
   try {
-    const { render, staticRenderFns, errors, tips } = vueTemplateCompiler.compile(source);
+    const { render, staticRenderFns, errors, tips } = vueTemplateCompiler.compile(
+      source,
+      compilerOptions,
+    );
     if (Array.isArray(errors) && errors.length > 0) {
       return { contents: '', errors };
     }
@@ -33,13 +36,16 @@ function compile(source) {
   }
 }
 
-export function Vue2TemplateCompilerPlugin() {
+export function Vue2TemplateCompilerPlugin({ extension, compilerOptions }) {
+  extension = extension || '.template.html';
+
+  const filterRE = new RegExp('\\' + extension + '$');
   return {
     name: 'vue2-template-compiler',
     setup(build) {
-      build.onLoad({ filter: /\.template.html$/ }, async (args) => {
+      build.onLoad({ filter: filterRE }, async (args) => {
         const source = await fs.promises.readFile(args.path, 'utf-8');
-        return compile(source);
+        return compile(source, compilerOptions);
       });
     },
   };
