@@ -1,15 +1,16 @@
 const esbuild = require('esbuild');
-const { Vue2TemplateCompilerPlugin } = require('../dist');
+const { vue2TemplateCompilerPlugin } = require('../dist');
 
 esbuild
   .build({
     entryPoints: ['src/index.js'],
-    minify: true,
+    minify: false,
     bundle: true,
     outfile: 'dist/index.js',
-    plugins: [Vue2TemplateCompilerPlugin()],
+    plugins: [vue2TemplateCompilerPlugin()],
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
+    external: ['vue'],
   })
   .catch(() => process.exit(1));

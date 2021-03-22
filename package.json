@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "a esbuild plugin for work with vue2",
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
-    "build": "esbuild src/index.js --outfile=dist/index.js --format=cjs",
-    "build:test": "cd test && node build.js"
+    "build": "esbuild src/index.ts --outfile=dist/index.js --format=cjs",
+    "build:test": "cd test && node build.js",
+    "build:types": "tsc"
   },
   "keywords": [
     "vue",
@@ -15,7 +17,9 @@
   "author": "yuekcc",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^14.0.0",
     "esbuild": "~0.9.0",
+    "typescript": "^4.2.3",
     "vue": "~2.6.0"
   },
   "peerDependencies": {

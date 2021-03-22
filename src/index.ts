@@ -1,19 +1,21 @@
 import vueTemplateCompiler from 'vue-template-compiler';
 import transformToEs2015 from 'vue-template-es2015-compiler';
 import fs from 'fs';
+import { CompilerOptions } from 'vue-template-compiler';
+import { OnLoadResult, Plugin, PartialMessage } from 'esbuild';
 
 function toFunction(body) {
   return `function() {${body}}`;
 }
 
-function compile(source, compilerOptions = null) {
+function compile(source: string, compilerOptions: CompilerOptions | null = null): OnLoadResult {
   try {
     const { render, staticRenderFns, errors, tips } = vueTemplateCompiler.compile(
       source,
       compilerOptions,
     );
     if (Array.isArray(errors) && errors.length > 0) {
-      return { contents: '', errors };
+      return { errors: errors.map((message) => ({ detail: message } as PartialMessage)) };
     }
 
     if (Array.isArray(tips) && tips.length > 0) {
@@ -30,14 +32,20 @@ function compile(source, compilerOptions = null) {
 }`;
     const contents = transformToEs2015(code).replace(`module.exports = {`, `export default {`);
 
-    return { contents, errors };
+    return { contents };
   } catch (err) {
-    return { errors: [err.message] };
+    return { errors: [{ detail: err.message }] };
   }
 }
 
-export function Vue2TemplateCompilerPlugin({ extension, compilerOptions }) {
-  extension = extension || '.template.html';
+export interface PluginOptions {
+  extension: string;
+  compilerOptions?: CompilerOptions;
+}
+
+export function vue2TemplateCompilerPlugin(options: PluginOptions): Plugin {
+  const extension = options?.extension || '.template.html';
+  const compilerOptions = options?.compilerOptions || null;
 
   const filterRE = new RegExp('\\' + extension + '$');
   return {
